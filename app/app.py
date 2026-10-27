@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import os
 import time
 import psycopg
@@ -70,3 +71,6 @@ def index():
 if __name__ == "__main__":
     initialize_database()
     app.run(host="0.0.0.0", port=5000)
+=======
+
+>>>>>>> dcb6921dce89c2bd2bec2f8cb0065bd71940e21b
