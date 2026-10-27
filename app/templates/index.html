@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StreamResilience</title>
+</head>
+<body>
+  <h1>StreamResilience</h1>
+  <p>Cloud migration and resilience demonstration</p>
+
+  <form method="POST">
+    <label for="name">Your name</label>
+    <input id="name" name="name" maxlength="100" required>
+
+    <label for="message">Message</label>
+    <textarea id="message" name="message" required></textarea>
+
+    <button type="submit">Save message</button>
+  </form>
+
+  <h2>Saved messages</h2>
+  {% for row in rows %}
+    <article>
+      <strong>{{ row[1] }}</strong>
+      <p>{{ row[2] }}</p>
+      <small>{{ row[3] }}</small>
+    </article>
+  {% else %}
+    <p>No messages saved yet.</p>
+  {% endfor %}
+</body>
+</html>
