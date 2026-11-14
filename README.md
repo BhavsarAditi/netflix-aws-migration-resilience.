@@ -18,15 +18,6 @@ If startup still fails, double-click `SHOW-LOGS.bat` and share the full output. 
 - `SHOW-LOGS.bat` — print service status and migration/web/database logs.
 - `scripts/repair-local-db.ps1` — align the local database role password and schema permissions with `.env`, using the configured `DB_USER` (not an assumed `postgres` role); it does not delete the database volume.
 
-## Deliverables and guides
-- `deployment/EC2-DEPLOY-GUIDE.md` — Lift-and-Shift on EC2 with local PostgreSQL.
-- `deployment/RDS-REFACTOR-GUIDE.md` — refactor Flask to Amazon RDS PostgreSQL.
-- `deployment/COST-AND-EFFORT-WORKSHEET.md` — record actual AWS estimates and team effort.
-- `deployment/FINAL-SUBMISSION-CHECKLIST.md` — evidence checklist.
-- `docs/architecture.md` — system architecture.
-- `docs/case-study.md` — project case study.
-- `docs/exercise-plan.md` — demonstration sequence.
-
 ## App features
 Netflix-branded sign-in and registration, responsive streaming homepage, catalogue search, TV Shows and Movies browsing, title details, sample video player, account-scoped My List, playback history, PostgreSQL persistence, health endpoint and metrics endpoint.
 
