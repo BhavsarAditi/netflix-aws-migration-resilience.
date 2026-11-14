@@ -2,32 +2,191 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>StreamResilience</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090909">
+  <title>Netflix — Watch TV Shows Online, Watch Movies Online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--red:#e50914;--bg:#090909;--panel:#181818;--muted:#a3a3a3;--white:#f5f5f1}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif}
+    button,input{font:inherit}button{cursor:pointer}.topbar{height:72px;position:fixed;z-index:20;top:0;left:0;right:0;display:flex;align-items:center;padding:0 5.2%;gap:38px;background:linear-gradient(180deg,rgba(0,0,0,.88),transparent);transition:background .25s}
+    .topbar.solid{background:#090909;box-shadow:0 5px 25px #0007}.brand{font-family:Manrope,sans-serif;font-weight:900;color:var(--red);font-size:27px;letter-spacing:-1.8px;text-decoration:none;white-space:nowrap}
+    nav{display:flex;gap:23px;align-items:center}nav a{color:#ddd;text-decoration:none;font-size:13px;font-weight:600}nav a:hover,nav a.active{color:#fff}
+    .navright{margin-left:auto;display:flex;align-items:center;gap:18px}.searchbox{display:flex;align-items:center;border:1px solid transparent;padding:7px 9px;transition:.2s}.searchbox.open{border-color:#eee;background:#111}.searchbox input{width:0;border:0;outline:0;background:transparent;color:#fff;transition:.2s}.searchbox.open input{width:180px;padding-left:8px}.iconbtn{border:0;background:transparent;color:white;font-size:21px;padding:4px}.profile{width:32px;height:32px;border-radius:5px;background:linear-gradient(135deg,#e50914,#8c0710);display:grid;place-items:center;font-weight:800;font-size:13px;border:1px solid #ffffff55}
+    .hero{height:min(780px,86vh);min-height:560px;position:relative;display:flex;align-items:center;padding:100px 5.2% 80px;background-size:cover;background-position:center 38%;transition:background-image .3s}
+    .hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#090909 0%,rgba(9,9,9,.76) 32%,rgba(9,9,9,.12) 75%),linear-gradient(0deg,#090909 0%,transparent 45%,rgba(0,0,0,.22) 100%)}
+    .hero-content{position:relative;z-index:1;max-width:570px;margin-top:35px}.eyebrow{font-size:12px;letter-spacing:4px;color:#ddd;font-weight:800;text-transform:uppercase}.hero h1{font-family:Manrope,sans-serif;font-size:clamp(42px,6vw,76px);line-height:1.02;letter-spacing:-3px;margin:15px 0 18px;font-weight:800}.hero p{font-size:16px;line-height:1.65;color:#e1e1e1;max-width:510px}.meta{display:flex;align-items:center;gap:12px;color:#ddd;font-size:13px;margin:20px 0}.match{color:#46d369;font-weight:800}.pill{border:1px solid #888;padding:3px 7px;font-size:11px}
+    .actions{display:flex;gap:12px;margin-top:25px}.primary,.secondary{border:0;border-radius:4px;padding:12px 22px;font-weight:800;display:flex;align-items:center;gap:9px}.primary{background:#fff;color:#111}.primary:hover{background:#ddd}.secondary{background:#ffffff30;color:white;backdrop-filter:blur(5px)}.secondary:hover{background:#ffffff48}
+    .content{position:relative;margin-top:-55px;z-index:2;padding-bottom:70px}.section{margin:0 0 34px;padding:0 5.2%}.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}.section h2{font-size:20px;margin:0;font-weight:700}.section-note{font-size:12px;color:var(--muted)}
+    .rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(155px,1fr);grid-auto-columns:clamp(150px,15vw,218px);gap:12px;overflow-x:auto;padding:5px 2px 16px;scrollbar-width:thin;scrollbar-color:#444 transparent}.card{position:relative;aspect-ratio:2/3;border-radius:6px;overflow:hidden;background:#202020;transition:transform .2s,box-shadow .2s;cursor:pointer}.card:hover{transform:scale(1.045);z-index:3;box-shadow:0 10px 30px #000b}.card img{width:100%;height:100%;object-fit:cover;display:block}.card:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,#000b)}.card-info{position:absolute;z-index:1;left:11px;right:10px;bottom:11px}.card-info strong{display:block;font-size:13px}.card-info span{font-size:11px;color:#ddd}.card-actions{position:absolute;z-index:2;top:8px;right:8px;display:flex;gap:5px;opacity:0;transition:.2s}.card:hover .card-actions{opacity:1}.round{width:30px;height:30px;border:1px solid #ffffff88;border-radius:50%;background:#111c;color:#fff;font-size:16px}.round.saved{background:var(--red);border-color:var(--red)}
+    .empty{color:#aaa;padding:24px 0}.footer{border-top:1px solid #242424;padding:35px 5.2% 45px;color:#777;font-size:12px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer strong{color:#bbb}.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);background:#f5f5f1;color:#111;padding:12px 18px;border-radius:5px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:60}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .modal{position:fixed;inset:0;background:#000c;z-index:50;display:none;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.detail{width:min(760px,100%);max-height:90vh;overflow:auto;background:#181818;border-radius:9px;box-shadow:0 20px 70px #000}.detail-hero{height:330px;background-size:cover;background-position:center;position:relative}.detail-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#181818,transparent 75%)}.close{position:absolute;right:15px;top:15px;z-index:2;width:35px;height:35px;border-radius:50%;border:0;background:#181818;color:white;font-size:22px}.detail-body{position:relative;padding:0 30px 30px;margin-top:-50px;z-index:2}.detail-body h2{font-size:30px;margin:0 0 10px}.detail-body p{color:#ddd;line-height:1.6}.video-modal .detail{width:min(1000px,100%);background:#050505}.video-wrap{padding:14px}.video-wrap video{width:100%;max-height:68vh;background:#000}.video-title{padding:0 16px 14px}.video-title h3{margin:6px 0}.video-title p{color:#aaa;font-size:13px}
+    .search-results{display:none;padding-top:100px;min-height:70vh}.search-results.show{display:block}.search-results .section{margin-top:10px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:16px}.grid .card{width:100%}
+    .status{display:inline-flex;align-items:center;gap:7px;color:#a7e6b5;font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:#46d369;box-shadow:0 0 10px #46d369}
+    @media(max-width:760px){.topbar{height:62px;padding:0 4%;gap:18px}.brand{font-size:22px}nav{gap:12px}nav a{font-size:11px}.navright{gap:8px}.searchbox.open input{width:105px}.hero{min-height:590px;height:76vh;padding-left:5%;background-position:58% center}.hero h1{font-size:48px}.hero p{font-size:14px}.section{padding:0 4%}.rail{grid-auto-columns:145px}.content{margin-top:-35px}.section h2{font-size:17px}}
+    @media(max-width:480px){nav a:nth-child(n+3){display:none}.hero h1{font-size:41px}.hero-content{margin-top:55px}.actions button{padding:11px 15px}.meta{flex-wrap:wrap}}
+
+    [hidden]{display:none!important}
+    .auth-screen{position:fixed;inset:0;z-index:100;background:#080808 url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=2000&q=85') center/cover no-repeat;display:flex;align-items:center;justify-content:center;overflow:auto;padding:100px 20px 40px}
+    .auth-shade{position:fixed;inset:0;background:linear-gradient(90deg,#000b,#0008),linear-gradient(0deg,#000b,transparent 65%,#0009)}
+    .auth-header{position:absolute;top:0;left:0;right:0;z-index:2;padding:25px 5.2%;display:flex;align-items:center;justify-content:space-between}
+    .auth-header .brand{font-size:38px;letter-spacing:-2px}.auth-help{color:#eee;font-size:13px}
+    .auth-card{position:relative;z-index:1;width:min(450px,100%);padding:48px 52px;background:rgba(0,0,0,.82);border-radius:5px;box-shadow:0 15px 55px #0008}
+    .auth-card h1{font-size:32px;margin:0 0 9px;color:#fff}.auth-subtitle{color:#bbb;font-size:13px;margin:0 0 25px}
+    .auth-field{display:block;margin:0 0 16px}.auth-field span{display:block;color:#bbb;font-size:12px;margin-bottom:7px}
+    .auth-field input{width:100%;height:52px;border:1px solid #555;border-radius:4px;background:#333;color:#fff;padding:0 15px;outline:none}.auth-field input:focus{border-color:#ddd;background:#3c3c3c}
+    .auth-submit{width:100%;height:48px;border:0;border-radius:4px;background:#e50914;color:#fff;font-weight:800;margin:8px 0 10px}.auth-submit:hover{background:#f6121d}
+    .auth-error{min-height:18px;color:#ff777d;font-size:12px;margin:6px 0 12px}.auth-switch{color:#aaa;font-size:14px;margin:24px 0 17px}.auth-switch button{background:none;border:0;color:#fff;font-weight:700;padding:0}.auth-legal{color:#777;font-size:11px;line-height:1.5;margin:0}
+    body.authenticated .auth-screen{display:none}body:not(.authenticated) .topbar,body:not(.authenticated) #mainView,body:not(.authenticated) #searchResults,body:not(.authenticated) .footer{display:none!important}
+    @media(max-width:520px){.auth-card{padding:35px 25px}.auth-header{padding:20px 5%}.auth-header .brand{font-size:30px}.auth-help{font-size:11px}}
+
+  </style>
 </head>
 <body>
-  <h1>StreamResilience</h1>
-  <p>Cloud migration and resilience demonstration</p>
 
-  <form method="POST">
-    <label for="name">Your name</label>
-    <input id="name" name="name" maxlength="100" required>
+<section id="authScreen" class="auth-screen">
+  <div class="auth-shade"></div>
+  <header class="auth-header"><a class="brand" href="#">NETFLIX</a><span class="auth-help">Unlimited movies, TV shows and more.</span></header>
+  <div class="auth-card">
+    <h1 id="authTitle">Sign In</h1>
+    <p class="auth-subtitle" id="authSubtitle">Welcome back. Sign in to continue watching.</p>
+    <form id="authForm">
+      <label id="nameField" class="auth-field" hidden><span>Your name</span><input id="authName" type="text" autocomplete="name" placeholder="Your name"></label>
+      <label class="auth-field"><span>Email address</span><input id="authEmail" type="email" autocomplete="email" placeholder="Email address" required></label>
+      <label class="auth-field"><span>Password</span><input id="authPassword" type="password" autocomplete="current-password" placeholder="Password (minimum 8 characters)" minlength="8" required></label>
+      <button class="auth-submit" id="authSubmit" type="submit">Sign In</button>
+      <p class="auth-error" id="authError" role="alert"></p>
+    </form>
+    <p class="auth-switch"><span id="authSwitchText">New to Netflix?</span> <button type="button" id="authSwitch">Sign up now</button></p>
+    <p class="auth-legal">This is a student cloud-computing demonstration. Create an account to explore the sample catalogue.</p>
+  </div>
+</section>
 
-    <label for="message">Message</label>
-    <textarea id="message" name="message" required></textarea>
+<header class="topbar" id="topbar">
+  <a class="brand" href="#" aria-label="Netflix home">NETFLIX</a>
+  <nav>
+    <a href="#" class="active" data-nav="home">Home</a><a href="#series" data-nav="series">TV Shows</a><a href="#movies" data-nav="movies">Movies</a><a href="#mylist" data-nav="mylist">My List</a>
+  </nav>
+  <div class="navright">
+    <div class="searchbox" id="searchbox"><button class="iconbtn" id="searchToggle" aria-label="Search">⌕</button><input id="searchInput" placeholder="Titles, genres..." autocomplete="off"></div>
+    <button class="iconbtn" id="profileBtn" title="Account menu"><span class="profile" id="profileInitial">N</span></button><button class="secondary" id="logoutBtn" style="padding:8px 12px;font-size:12px">Sign out</button>
+  </div>
+</header>
 
-    <button type="submit">Save message</button>
-  </form>
+<main id="mainView">
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="eyebrow">NETFLIX ORIGINAL</div>
+      <h1 id="heroTitle">The Last Horizon</h1>
+      <div class="meta"><span class="match">98% Match</span><span id="heroYear">2025</span><span class="pill" id="heroRating">U/A 13+</span><span id="heroDuration">2h 08m</span></div>
+      <p id="heroDescription">A mysterious signal arrives from beyond the solar system. The future is closer than anyone imagined.</p>
+      <div class="actions"><button class="primary" id="heroPlay">▶ &nbsp; Play</button><button class="secondary" id="heroInfo">ⓘ &nbsp; More Info</button></div>
+    </div>
+  </section>
+  <div class="content" id="contentRows">
+    <section class="section"><div class="section-head"><h2>Trending Now</h2><span class="section-note">Popular on Netflix</span></div><div class="rail" id="trending"></div></section>
+    <section class="section" id="series"><div class="section-head"><h2>Popular TV Shows</h2><span class="section-note">Find your next favourite</span></div><div class="rail" id="seriesRail"></div></section>
+    <section class="section" id="movies"><div class="section-head"><h2>Movies</h2><span class="section-note">Handpicked for you</span></div><div class="rail" id="moviesRail"></div></section>
+    <section class="section"><div class="section-head"><h2>Documentaries</h2><span class="section-note">Real stories. New perspectives.</span></div><div class="rail" id="docsRail"></div></section>
+    <section class="section" id="mylist"><div class="section-head"><h2>My List</h2><span class="section-note">Saved to your PostgreSQL database</span></div><div class="rail" id="myListRail"></div></section>
+    <section class="section"><div class="section-head"><h2>Recently Played</h2><span class="section-note">Your viewing activity</span></div><div class="rail" id="historyRail"></div></section>
+  </div>
+</main>
+<section class="search-results" id="searchResults"><div class="section"><div class="section-head"><h2 id="searchHeading">Search results</h2><button class="secondary" id="clearSearch">✕ Clear</button></div><div class="grid" id="searchGrid"></div><p class="empty" id="noResults" hidden>No titles found. Try another search.</p></div></section>
 
-  <h2>Saved messages</h2>
-  {% for row in rows %}
-    <article>
-      <strong>{{ row[1] }}</strong>
-      <p>{{ row[2] }}</p>
-      <small>{{ row[3] }}</small>
-    </article>
-  {% else %}
-    <p>No messages saved yet.</p>
-  {% endfor %}
+<footer class="footer"><div><strong>NETFLIX</strong><p>Your next story starts here.</p><span class="status"><i class="dot"></i> <span id="dbStatus">Checking database connection…</span></span></div><div>Built with Flask · PostgreSQL · Docker · AWS-ready<br><br>A student-made streaming platform demonstration. Sample catalogue and videos.</div></footer>
+<div class="toast" id="toast"></div>
+
+<div class="modal" id="detailModal" role="dialog" aria-modal="true"><div class="detail"><div class="detail-hero" id="detailHero"><button class="close" data-close="detailModal">×</button></div><div class="detail-body"><h2 id="detailTitle"></h2><div class="meta" id="detailMeta"></div><p id="detailDescription"></p><div class="actions"><button class="primary" id="detailPlay">▶ &nbsp; Play</button><button class="secondary" id="detailSave">＋ &nbsp; My List</button></div></div></div></div>
+<div class="modal video-modal" id="videoModal" role="dialog" aria-modal="true"><div class="detail"><button class="close" data-close="videoModal">×</button><div class="video-wrap"><video id="player" controls playsinline></video></div><div class="video-title"><h3 id="videoTitle">Now Playing</h3><p>Sample video stream for the project demonstration. Video availability requires an internet connection.</p></div></div></div>
+
+<script>
+const state={catalog:[],saved:new Set(),profile:'Netflix member',active:null,hero:null,history:[]};
+const $=id=>document.getElementById(id);
+function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2400)}
+function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function card(movie){return `<article class="card" data-id="${movie.id}" tabindex="0" aria-label="${escapeHtml(movie.title)}"><img loading="lazy" src="${escapeHtml(movie.poster)}" alt="${escapeHtml(movie.title)} poster" onerror="this.style.opacity='.15'"><div class="card-actions"><button class="round ${state.saved.has(movie.id)?'saved':''}" data-save="${movie.id}" title="Add to My List">${state.saved.has(movie.id)?'✓':'＋'}</button></div><div class="card-info"><strong>${escapeHtml(movie.title)}</strong><span>${movie.year} · ${escapeHtml(movie.category)}</span></div></article>`}
+function renderRail(id,items,empty='Nothing here yet.'){const el=$(id);el.innerHTML=items.length?items.map(card).join():`<div class="empty">${empty}</div>`}
+function renderAll(){
+ const items=state.catalog;
+ renderRail('trending',items.slice(0,8));
+ renderRail('seriesRail',items.filter(x=>['Drama','Thriller','Sci-Fi'].includes(x.category)));
+ renderRail('moviesRail',items.filter(x=>['Action','Adventure','Romance'].includes(x.category)));
+ renderRail('docsRail',items.filter(x=>x.category==='Documentary'));
+ renderRail('myListRail',items.filter(x=>state.saved.has(x.id)),'Save titles with the ＋ button to find them here.');
+ renderRail('historyRail',state.history.map(h=>items.find(x=>x.id===h.movie_id)).filter(Boolean),'Press Play on a title to build your viewing history.');
+ const hero=items.find(x=>x.featured)||items[0];if(hero)setHero(hero);
+}
+function setHero(movie){state.hero=movie;$('hero').style.backgroundImage=`url("${movie.backdrop}")`;$('heroTitle').textContent=movie.title;$('heroYear').textContent=movie.year;$('heroRating').textContent=movie.rating;$('heroDuration').textContent=movie.duration;$('heroDescription').textContent=movie.description}
+async function api(url,options={}){const response=await fetch(url,{headers:{'Content-Type':'application/json',...(options.headers||{})},...options});if(!response.ok)throw new Error(`Request failed (${response.status})`);return response.json()}
+async function refreshSaved(){try{const rows=await api(`/api/my-list?profile=${encodeURIComponent(state.profile)}`);state.saved=new Set(rows.map(x=>x.id));renderAll()}catch(e){toast('Could not load My List')}}
+async function refreshHistory(){try{state.history=await api(`/api/history?profile=${encodeURIComponent(state.profile)}`);renderAll()}catch(e){}}
+async function toggleSave(id){try{const result=await api(`/api/my-list/${id}`,{method:'POST',body:JSON.stringify({profile:state.profile})});if(result.saved)state.saved.add(id);else state.saved.delete(id);renderAll();const movie=state.catalog.find(x=>x.id===id);toast(result.saved?`${movie.title} added to My List`:`${movie.title} removed from My List`);if($('detailModal').classList.contains('show'))updateDetailSave()}catch(e){toast('Could not update My List. Check database connection.')}}
+function showDetail(movie){state.active=movie;$('detailHero').style.backgroundImage=`url("${movie.backdrop}")`;$('detailTitle').textContent=movie.title;$('detailMeta').innerHTML=`<span class="match">98% Match</span><span>${movie.year}</span><span class="pill">${escapeHtml(movie.rating)}</span><span>${escapeHtml(movie.duration)}</span><span>${escapeHtml(movie.category)}</span>`;$('detailDescription').textContent=movie.description;updateDetailSave();$('detailModal').classList.add('show')}
+function updateDetailSave(){if(state.active){const saved=state.saved.has(state.active.id);$('detailSave').textContent=saved?'✓  In My List':'＋  My List'}}
+async function playMovie(movie){if(!movie)return;try{await api('/api/playback',{method:'POST',body:JSON.stringify({movie_id:movie.id,event_type:'play',profile:state.profile})});}catch(e){toast('Playback event could not be saved');}
+ $('videoTitle').textContent=movie.title;$('player').src=movie.video;$('videoModal').classList.add('show');$('player').play().catch(()=>{});refreshHistory()}
+function closeModal(id){$(id).classList.remove('show');if(id==='videoModal'){$('player').pause();$('player').removeAttribute('src');$('player').load()}}
+document.addEventListener('click',e=>{
+ const save=e.target.closest('[data-save]');if(save){e.stopPropagation();toggleSave(Number(save.dataset.save));return}
+ const movieCard=e.target.closest('.card[data-id]');if(movieCard){const movie=state.catalog.find(x=>x.id===Number(movieCard.dataset.id));if(movie)showDetail(movie);return}
+ const close=e.target.closest('[data-close]');if(close)closeModal(close.dataset.close);
+ if(e.target.classList.contains('modal'))closeModal(e.target.id);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('detailModal');closeModal('videoModal')}if((e.key==='Enter'||e.key===' ')&&e.target.matches('.card[data-id]')){e.preventDefault();const m=state.catalog.find(x=>x.id===Number(e.target.dataset.id));if(m)showDetail(m)}});
+$('heroPlay').onclick=()=>playMovie(state.hero);$('heroInfo').onclick=()=>showDetail(state.hero);$('detailPlay').onclick=()=>{const m=state.active;closeModal('detailModal');playMovie(m)};$('detailSave').onclick=()=>state.active&&toggleSave(state.active.id);
+$('searchToggle').onclick=()=>{$('searchbox').classList.toggle('open');if($('searchbox').classList.contains('open'))$('searchInput').focus();else{$('searchInput').value='';hideSearch()}};
+let searchTimer;$('searchInput').addEventListener('input',()=>{clearTimeout(searchTimer);searchTimer=setTimeout(runSearch,220)});
+async function runSearch(){const q=$('searchInput').value.trim();if(!q){hideSearch();return}try{const results=await api(`/api/catalog?q=${encodeURIComponent(q)}`);$('mainView').style.display='none';$('searchResults').classList.add('show');$('searchHeading').textContent=`Results for “${q}”`;$('searchGrid').innerHTML=results.map(card).join('');$('noResults').hidden=results.length>0}catch(e){toast('Search is unavailable')}}
+function hideSearch(){$('mainView').style.display='block';$('searchResults').classList.remove('show')}
+$('clearSearch').onclick=()=>{$('searchInput').value='';hideSearch();$('searchbox').classList.remove('open')};
+$('profileBtn').onclick=()=>toast(`Signed in as ${state.user?.display_name||'Netflix member'}`);
+$('logoutBtn').onclick=async()=>{try{await api('/api/auth/logout',{method:'POST'});}catch(e){}state.user=null;document.body.classList.remove('authenticated');$('authScreen').style.display='flex';$('mainView').style.display='none';$('searchResults').classList.remove('show');$('topbar').style.display='none';};
+window.addEventListener('scroll',()=>$('topbar').classList.toggle('solid',window.scrollY>30));
+let authMode='login';
+function setAuthMode(mode){
+ authMode=mode;
+ const signup=mode==='register';
+ $('authTitle').textContent=signup?'Create Account':'Sign In';
+ $('authSubtitle').textContent=signup?'Create your Netflix demo account to start exploring.':'Welcome back. Sign in to continue watching.';
+ $('nameField').hidden=!signup;
+ $('authName').required=signup;
+ $('authPassword').autocomplete=signup?'new-password':'current-password';
+ $('authSubmit').textContent=signup?'Create Account':'Sign In';
+ $('authSwitchText').textContent=signup?'Already have an account?':'New to Netflix?';
+ $('authSwitch').textContent=signup?'Sign in':'Sign up now';
+ $('authError').textContent='';
+}
+$('authSwitch').onclick=()=>setAuthMode(authMode==='login'?'register':'login');
+$('authForm').addEventListener('submit',async e=>{
+ e.preventDefault();$('authError').textContent='';$('authSubmit').disabled=true;$('authSubmit').textContent='Please wait…';
+ const payload={email:$('authEmail').value.trim(),password:$('authPassword').value};
+ if(authMode==='register')payload.name=$('authName').value.trim();
+ try{
+  const result=await api(authMode==='register'?'/api/auth/register':'/api/auth/login',{method:'POST',body:JSON.stringify(payload)});
+  if(!result.ok)throw new Error(result.error||'Authentication failed');
+  state.user=result.user;await loadNetflix();
+ }catch(err){$('authError').textContent=err.message||'Could not sign in. Please try again.';}
+ finally{$('authSubmit').disabled=false;$('authSubmit').textContent=authMode==='register'?'Create Account':'Sign In';}
+});
+async function loadNetflix(){
+ document.body.classList.add('authenticated');$('authScreen').style.display='none';$('mainView').style.display='block';$('topbar').style.display='flex';
+ $('profileInitial').textContent=(state.user.display_name||state.user.email||'N').charAt(0).toUpperCase();
+ try{
+  state.catalog=await api('/api/catalog');await refreshSaved();await refreshHistory();
+  $('dbStatus').textContent='PostgreSQL connected · Signed in as '+state.user.display_name;
+ }catch(e){$('dbStatus').textContent='Database connection unavailable';toast('Could not load catalogue. Check PostgreSQL.')}
+}
+async function start(){
+ try{
+  const auth=await api('/api/auth/me');
+  if(auth.authenticated){state.user=auth.user;await loadNetflix();}
+  else{document.body.classList.remove('authenticated');$('authScreen').style.display='flex';$('mainView').style.display='none';$('topbar').style.display='none';}
+ }catch(e){$('authError').textContent='Cannot connect to the application database. Start Docker and try again.';}
+}
+start();
+</script>
 </body>
 </html>
