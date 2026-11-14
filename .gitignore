@@ -1,12 +1,6 @@
 .env
-.env.*
-!.env.example
-!.env.rds.example
-
 __pycache__/
 *.py[cod]
 .venv/
 venv/
-*.log
-*.pem
-*.key
+.pytest_cache/

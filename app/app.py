@@ -38,6 +38,7 @@ def get_connection():
                 dbname=os.getenv("DB_NAME", "netflix_demo"),
                 user=os.getenv("DB_USER", "netflix_user"),
                 password=os.getenv("DB_PASSWORD", "change-me"),
+                sslmode=os.getenv("DB_SSLMODE", "require")
                 connect_timeout=4,
                 row_factory=dict_row
             )

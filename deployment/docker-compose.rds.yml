@@ -8,6 +8,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      DB_SSLMODE: ${DB_SSLMODE:-require}
       SECRET_KEY: ${SECRET_KEY}
     restart: "no"
 
@@ -20,6 +21,7 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      DB_SSLMODE: ${DB_SSLMODE:-require}
       SECRET_KEY: ${SECRET_KEY}
     ports:
       - "${APP_PORT:-80}:5000"
