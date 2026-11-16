@@ -171,7 +171,7 @@ def auth_register():
         session.clear()
         session.permanent = True
         session["user_id"] = user["id"]
-        return jsonify(ok=True, user=user), 201
+        return jsonify(ok=True, message="Account created successfully.", user=user), 201
     except Exception:
         app.logger.exception("Registration failed")
         return jsonify(error="Could not create your account. Please try again."), 503
@@ -187,7 +187,7 @@ def auth_login():
     try:
         with get_connection() as conn:
             user = conn.execute(
-                "SELECT id, email, display_name, password_hash FROM users WHERE email=%s",
+                "SELECT id, email, display_name, password_hash FROM users WHERE LOWER(email)=LOWER(%s)",
                 (email,)
             ).fetchone()
         if not user or not check_password_hash(user["password_hash"], password):
@@ -197,6 +197,7 @@ def auth_login():
         session["user_id"] = user["id"]
         return jsonify(
             ok=True,
+            message="Login successful.",
             user={"id": user["id"], "email": user["email"], "display_name": user["display_name"]}
         )
     except Exception:
@@ -319,4 +320,5 @@ def metrics():
 
 if __name__ == "__main__":
     initialize_database()
+    app.run(host="0.0.0.0", port=5000, debug=False)
     app.run(host="0.0.0.0", port=5000, debug=False)
