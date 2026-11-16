@@ -37,6 +37,10 @@
     .auth-card h1{font-size:32px;margin:0 0 9px;color:#fff}.auth-subtitle{color:#bbb;font-size:13px;margin:0 0 25px}
     .auth-field{display:block;margin:0 0 16px}.auth-field span{display:block;color:#bbb;font-size:12px;margin-bottom:7px}
     .auth-field input{width:100%;height:52px;border:1px solid #555;border-radius:4px;background:#333;color:#fff;padding:0 15px;outline:none}.auth-field input:focus{border-color:#ddd;background:#3c3c3c}
+    .password-wrap{position:relative}
+    .password-wrap input{padding-right:76px}
+    .password-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#fff;font-size:12px;font-weight:700;padding:10px;cursor:pointer}
+    .password-toggle:focus-visible{outline:2px solid #fff;border-radius:4px}
     .auth-submit{width:100%;height:48px;border:0;border-radius:4px;background:#e50914;color:#fff;font-weight:800;margin:8px 0 10px}.auth-submit:hover{background:#f6121d}
     .auth-error{min-height:18px;color:#ff777d;font-size:12px;margin:6px 0 12px}.auth-switch{color:#aaa;font-size:14px;margin:24px 0 17px}.auth-switch button{background:none;border:0;color:#fff;font-weight:700;padding:0}.auth-legal{color:#777;font-size:11px;line-height:1.5;margin:0}
     body.authenticated .auth-screen{display:none}body:not(.authenticated) .topbar,body:not(.authenticated) #mainView,body:not(.authenticated) #searchResults,body:not(.authenticated) .footer{display:none!important}
@@ -55,7 +59,12 @@
     <form id="authForm">
       <label id="nameField" class="auth-field" hidden><span>Your name</span><input id="authName" type="text" autocomplete="name" placeholder="Your name"></label>
       <label class="auth-field"><span>Email address</span><input id="authEmail" type="email" autocomplete="email" placeholder="Email address" required></label>
-      <label class="auth-field"><span>Password</span><input id="authPassword" type="password" autocomplete="current-password" placeholder="Password (minimum 8 characters)" minlength="8" required></label>
+      <div class="auth-field"><label for="authPassword"><span>Password</span></label>
+        <div class="password-wrap">
+          <input id="authPassword" type="password" autocomplete="current-password" placeholder="Password (minimum 8 characters)" minlength="8" required>
+          <button type="button" id="togglePassword" class="password-toggle" aria-label="Show password" aria-pressed="false" title="Show password">Show</button>
+        </div>
+      </div>
       <button class="auth-submit" id="authSubmit" type="submit">Sign In</button>
       <p class="auth-error" id="authError" role="alert"></p>
     </form>
@@ -140,7 +149,12 @@ function renderAll(){
  const hero=items.find(x=>x.featured)||items[0];if(hero)setHero(hero);
 }
 function setHero(movie){state.hero=movie;$('hero').style.backgroundImage=`url("${movie.backdrop}")`;$('heroTitle').textContent=movie.title;$('heroYear').textContent=movie.year;$('heroRating').textContent=movie.rating;$('heroDuration').textContent=movie.duration;$('heroDescription').textContent=movie.description}
-async function api(url,options={}){const response=await fetch(url,{headers:{'Content-Type':'application/json',...(options.headers||{})},...options});if(!response.ok)throw new Error(`Request failed (${response.status})`);return response.json()}
+async function api(url,options={}){
+ const response=await fetch(url,{credentials:'same-origin',...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});
+ const result=await response.json().catch(()=>({}));
+ if(!response.ok)throw new Error(result.error||`Request failed (${response.status})`);
+ return result;
+}
 async function refreshSaved(){try{const rows=await api(`/api/my-list?profile=${encodeURIComponent(state.profile)}`);state.saved=new Set(rows.map(x=>x.id));renderAll()}catch(e){toast('Could not load My List')}}
 async function refreshHistory(){try{state.history=await api(`/api/history?profile=${encodeURIComponent(state.profile)}`);renderAll()}catch(e){}}
 async function toggleSave(id){try{const result=await api(`/api/my-list/${id}`,{method:'POST',body:JSON.stringify({profile:state.profile})});if(result.saved)state.saved.add(id);else state.saved.delete(id);renderAll();const movie=state.catalog.find(x=>x.id===id);toast(result.saved?`${movie.title} added to My List`:`${movie.title} removed from My List`);if($('detailModal').classList.contains('show'))updateDetailSave()}catch(e){toast('Could not update My List. Check database connection.')}}
@@ -177,7 +191,7 @@ async function playMovie(movie) {
   video.style.display = 'block';
 
   const url = movie.video || '';
-  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/) || url.match(/drive\.google\.com\/uc\?[^#]*[?&]id=([^&#]+)/);
 
   if (driveMatch) {
     video.style.display = 'none';
@@ -194,7 +208,7 @@ async function playMovie(movie) {
   refreshHistory();
 }
 
-function closeModal(id){$(id).classList.remove('show');if(id==='videoModal'){$('player').pause();$('player').removeAttribute('src');$('player').load()}}
+function closeModal(id){$(id).classList.remove('show');if(id==='videoModal'){$('player').pause();$('player').removeAttribute('src');$('player').load();$('drivePlayer').src='';}}
 document.addEventListener('click',e=>{
  const save=e.target.closest('[data-save]');if(save){e.stopPropagation();toggleSave(Number(save.dataset.save));return}
  const movieCard=e.target.closest('.card[data-id]');if(movieCard){const movie=state.catalog.find(x=>x.id===Number(movieCard.dataset.id));if(movie)showDetail(movie);return}
@@ -211,6 +225,14 @@ $('clearSearch').onclick=()=>{$('searchInput').value='';hideSearch();$('searchbo
 $('profileBtn').onclick=()=>toast(`Signed in as ${state.user?.display_name||'Netflix member'}`);
 $('logoutBtn').onclick=async()=>{try{await api('/api/auth/logout',{method:'POST'});}catch(e){}state.user=null;document.body.classList.remove('authenticated');$('authScreen').style.display='flex';$('mainView').style.display='none';$('searchResults').classList.remove('show');$('topbar').style.display='none';};
 window.addEventListener('scroll',()=>$('topbar').classList.toggle('solid',window.scrollY>30));
+$('togglePassword').addEventListener('click',()=>{
+ const password=$('authPassword');
+ const visible=password.type==='password';
+ password.type=visible?'text':'password';
+ $('togglePassword').textContent=visible?'Hide':'Show';
+ $('togglePassword').setAttribute('aria-label',visible?'Hide password':'Show password');
+ $('togglePassword').setAttribute('aria-pressed',String(visible));
+});
 let authMode='login';
 function setAuthMode(mode){
  authMode=mode;
@@ -220,6 +242,10 @@ function setAuthMode(mode){
  $('nameField').hidden=!signup;
  $('authName').required=signup;
  $('authPassword').autocomplete=signup?'new-password':'current-password';
+ $('authPassword').type='password';
+ $('togglePassword').textContent='Show';
+ $('togglePassword').setAttribute('aria-label','Show password');
+ $('togglePassword').setAttribute('aria-pressed','false');
  $('authSubmit').textContent=signup?'Create Account':'Sign In';
  $('authSwitchText').textContent=signup?'Already have an account?':'New to Netflix?';
  $('authSwitch').textContent=signup?'Sign in':'Sign up now';
@@ -233,7 +259,9 @@ $('authForm').addEventListener('submit',async e=>{
  try{
   const result=await api(authMode==='register'?'/api/auth/register':'/api/auth/login',{method:'POST',body:JSON.stringify(payload)});
   if(!result.ok)throw new Error(result.error||'Authentication failed');
-  state.user=result.user;await loadNetflix();
+  state.user=result.user;
+  await loadNetflix();
+  toast(authMode==='register'?'Account created successfully! You are signed in.':'Login successful! Welcome back.');
  }catch(err){$('authError').textContent=err.message||'Could not sign in. Please try again.';}
  finally{$('authSubmit').disabled=false;$('authSubmit').textContent=authMode==='register'?'Create Account':'Sign In';}
 });
